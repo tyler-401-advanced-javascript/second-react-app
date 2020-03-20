@@ -1,5 +1,12 @@
 import React from 'react'
+import axios from 'axios'
 import './Form.scss'
+
+export const ContentType = {
+  JSON: 'JSON',
+  TEXT: 'TEXT',
+  HTML: 'HTML'
+}
 
 class Form extends React.Component {
   constructor() {
@@ -9,20 +16,33 @@ class Form extends React.Component {
     }
   }
 
+
   handleSubmit = async (e) => {
     // queries the api
     e.preventDefault();
 
     const URL = this.state.url
-    const raw = await fetch(URL, {
-      method: 'GET',
+    const response = await axios({
+      url: URL,
+      method: 'GET'
     })
 
-    const data = await raw.json();
+    let contentType = ContentType.TEXT
 
-    //send the result into a call to props.handleResultsFromForm
-    console.log(data.results);
-    this.props.handler(data.results);
+    if (response.headers['content-type']) {
+      switch (response.headers['content-type'].toLowerCase()) {
+        case 'application/json': 
+          contentType = ContentType.JSON;
+          break;
+        case 'text/html': 
+          contentType = ContentType.HTML;
+          break;
+      }
+    }
+
+    console.log(response)
+    
+    this.props.handler(response.data, contentType);
   }
 
   handleChange = (e) => {
@@ -49,7 +69,7 @@ class Form extends React.Component {
           <input type='radio' name='method2' value="DELETE" />
         </label>
 
-        <input type="submit" value="Go!" />
+        <input type="submit" value="Go!" id="submitButton" />
       </form>
     )
   }
