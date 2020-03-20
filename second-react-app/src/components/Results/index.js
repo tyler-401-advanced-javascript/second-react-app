@@ -12,7 +12,7 @@ class Results extends React.Component {
     return <pre>{this.props.data}</pre>
   }
   renderDataAsHtml() {
-    return <iframe title="data-mon">{this.props.data}</iframe>
+    return <iframe title="data">{this.props.data}</iframe>
   }
   renderDataAsNull() {
     return 'Unknown Data Type'
