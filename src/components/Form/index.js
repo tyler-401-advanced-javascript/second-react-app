@@ -1,5 +1,4 @@
 import React from 'react'
-import axios from 'axios'
 import './Form.scss'
 
 export const ContentType = {
@@ -9,40 +8,38 @@ export const ContentType = {
 }
 
 class Form extends React.Component {
-  constructor() {
-    super()
+  constructor(props) {
+    super();
+    this.props = props;
     this.state = {
-      url: null,
+      url: props.preFilledSearch ? props.preFilledSearch.url : '',
+      selectedMethod: props.preFilledSearch ? props.preFilledSearch.method : ''
     }
+    // if (props.preFilledSearch) {
+    //   this.handleSubmit();
+    // }
   }
 
+  preFillForm = () => {
+    // if this.props has preFilledSearch on it, 
+    // change the state accordingly
+    if (this.props.preFilledSeach == null) return
 
-  handleSubmit = async (e) => {
-    // queries the api
-    e.preventDefault();
-
-    const URL = this.state.url
-    const response = await axios({
-      url: URL,
-      method: 'GET'
+    const { url, method } = this.props.preFilledSearch
+    this.setState({
+      url,
+      selectedMethod: method
     })
+  }
 
-    let contentType = ContentType.TEXT
-
-    if (response.headers['content-type']) {
-      switch (response.headers['content-type'].toLowerCase()) {
-        case 'application/json': 
-          contentType = ContentType.JSON;
-          break;
-        case 'text/html': 
-          contentType = ContentType.HTML;
-          break;
-      }
+  handleSubmit = (e) => {
+    if (e) e.preventDefault();
+    if (!this.state.url) {
+      alert('URL is required')
+      return
     }
-
-    console.log(response)
     
-    this.props.handler(response.data, contentType);
+    this.props.getApiData(this.state.url, this.state.method)
   }
 
   handleChange = (e) => {
@@ -51,24 +48,30 @@ class Form extends React.Component {
     })
   }
 
+
   render() {
+
+    // select the default method based on state.
+    //prefill the form as needed. 
+
+    this.preFillForm();
+
     return (
       <form id="Form" onSubmit={this.handleSubmit}>
-        <input type="text" id="formInput" placeholder="Find Stuff..." onChange={this.handleChange}></input>
+        <input
+          type="text"
+          id="formInput"
+          placeholder="Find Stuff..."
+          value={this.state.url}
+          onChange={this.handleChange}></input>
 
-        <label>GET
-          <input type='radio' name='method2' value="GET" />
-        </label>
-        <label>POST
-          <input type='radio' name='method2' value="POST" />
-        </label>
-        <label>PUT
-          <input type='radio' name='method2' value="PUT" />
-        </label>
-        <label>DELETE
-          <input type='radio' name='method2' value="DELETE" />
-        </label>
-
+        <select name="method" id="methodMenu" onChange={(ev) => { this.setState({ selectedMethod: ev.target.value })}} value={this.state.selectedMethod}>
+          <option value="">Select Method</option>
+          <option value="GET" >GET</option>
+          <option value="POST" >POST</option>
+          <option value="PUT" >PUT</option>
+          <option value="DELETE" >DELETE</option>
+        </select>
         <input type="submit" value="Go!" id="submitButton" />
       </form>
     )

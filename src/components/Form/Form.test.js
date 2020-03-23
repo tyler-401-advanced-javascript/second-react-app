@@ -1,7 +1,6 @@
 import React from 'react';
 // import Adapter from 'enzyme-adapter-react-15'
 import App from '../App';
-import Form from './'
 
 
 import enzyme, { shallow, mount } from 'enzyme'

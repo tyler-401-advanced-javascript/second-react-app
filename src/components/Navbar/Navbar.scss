@@ -1,0 +1,22 @@
+#Navbar {
+  width: 50%;
+  background-color: rgb(26, 26, 99);
+  height: 50px;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  margin: auto;
+  margin-bottom: 2px;
+  margin-top: 2px;
+  padding: 15px;
+
+  a {
+    text-transform: uppercase;
+    color: white;
+    font-weight: 100;
+    font-size: 15px;
+    text-decoration: none;
+    margin-inline-start: 10px;
+    padding: 10px;
+  }
+}
